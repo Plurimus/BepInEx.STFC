@@ -33,7 +33,7 @@ use [Legacy](https://github.com/Plurimus/BepInEx.Legacy/tree/Legacy) branch
 ## Resources
 
 **[BepInEx](https://github.com/BepInEx/BepInEx)**
-- BepInEx 6.0.0-pre.1](https://github.com/BepInEx/BepInEx/releases/tag/v6.0.0-pre.1) - v6.0.0-pre.1
+- [BepInEx 6.0.0-pre.1](https://github.com/BepInEx/BepInEx/releases/tag/v6.0.0-pre.1) - v6.0.0-pre.1
   fork ([ec79ad0](https://github.com/BepInEx/BepInEx/commit/ec79ad057b20c302c17b34e63906ee398352d852))
   
 **[Il2CppDumper](https://github.com/Perfare/Il2CppDumper)**
