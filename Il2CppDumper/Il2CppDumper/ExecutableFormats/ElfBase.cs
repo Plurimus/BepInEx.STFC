@@ -1,19 +1,15 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace Il2CppDumper
 {
     public abstract class ElfBase : Il2Cpp
     {
-        public bool IsDumped;
-        public ulong DumpAddr;
+        protected ElfBase(Stream stream) : base(stream) { }
+        protected abstract void Load();
+        protected abstract bool CheckSection();
 
-        protected ElfBase(Stream stream, Action<string> reportProgressAction) : base(stream, reportProgressAction) { }
+        public override bool CheckDump() => !CheckSection();
 
-        public void GetDumpAddress()
-        {
-            reportProgressAction("Detected this may be a dump file.");
-            reportProgressAction("Forcing continuation...");
-        }
+        public void Reload() => Load();
     }
 }

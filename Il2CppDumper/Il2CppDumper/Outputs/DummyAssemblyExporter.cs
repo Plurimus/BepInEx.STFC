@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace Il2CppDumper
 {
@@ -11,22 +6,17 @@ namespace Il2CppDumper
     {
         public static void Export(Il2CppExecutor il2CppExecutor, string outputDir, bool addToken)
         {
-	        string dummyDllPath = Path.Combine(outputDir, "DummyDll");
-
-            if (Directory.Exists(dummyDllPath))
-                Directory.Delete(dummyDllPath, true);
-            Directory.CreateDirectory(dummyDllPath);
-
+            Directory.SetCurrentDirectory(outputDir);
+            if (Directory.Exists("DummyDll"))
+                Directory.Delete("DummyDll", true);
+            Directory.CreateDirectory("DummyDll");
+            Directory.SetCurrentDirectory("DummyDll");
             var dummy = new DummyAssemblyGenerator(il2CppExecutor, addToken);
             foreach (var assembly in dummy.Assemblies)
             {
-	            string path = Path.Combine(dummyDllPath, assembly.MainModule.Name);
-
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    assembly.Write(stream);
-                    assembly.Dispose();
-                }
+                using var stream = new MemoryStream();
+                assembly.Write(stream);
+                File.WriteAllBytes(assembly.MainModule.Name, stream.ToArray());
             }
         }
     }

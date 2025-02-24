@@ -9,12 +9,12 @@ namespace Il2CppDumper
 {
     public sealed class Macho64 : Il2Cpp
     {
-        private List<MachoSection64Bit> sections = new List<MachoSection64Bit>();
         private static readonly byte[] FeatureBytes1 = { 0x2, 0x0, 0x80, 0xD2 };//MOV X2, #0
         private static readonly byte[] FeatureBytes2 = { 0x3, 0x0, 0x80, 0x52 };//MOV W3, #0
-        private ulong vmaddr;
+        private readonly List<MachoSection64Bit> sections = new();
+        private readonly ulong vmaddr;
 
-        public Macho64(Stream stream, Action<string> reportProgressAction) : base(stream, reportProgressAction)
+        public Macho64(Stream stream) : base(stream)
         {
             Position += 16; //skip magic, cputype, cpusubtype, filetype
             var ncmds = ReadUInt32();
@@ -58,7 +58,7 @@ namespace Il2CppDumper
                         var cryptID = ReadUInt32();
                         if (cryptID != 0)
                         {
-                            reportProgressAction("ERROR: This Mach-O executable is encrypted and cannot be processed.");
+                            Console.WriteLine("ERROR: This Mach-O executable is encrypted and cannot be processed.");
                         }
                         break;
                 }
@@ -97,7 +97,7 @@ namespace Il2CppDumper
             if (Version < 23)
             {
                 var __mod_init_func = sections.First(x => x.sectname == "__mod_init_func");
-                var addrs = ReadClassArray<ulong>(__mod_init_func.offset, (long)__mod_init_func.size / 8);
+                var addrs = ReadClassArray<ulong>(__mod_init_func.offset, __mod_init_func.size / 8);
                 foreach (var i in addrs)
                 {
                     if (i > 0)
@@ -163,7 +163,7 @@ namespace Il2CppDumper
                  * B sub
                  */
                 var __mod_init_func = sections.First(x => x.sectname == "__mod_init_func");
-                var addrs = ReadClassArray<ulong>(__mod_init_func.offset, (long)__mod_init_func.size / 8);
+                var addrs = ReadClassArray<ulong>(__mod_init_func.offset, __mod_init_func.size / 8);
                 foreach (var i in addrs)
                 {
                     if (i > 0)
@@ -200,7 +200,7 @@ namespace Il2CppDumper
                  * B sub
                  */
                 var __mod_init_func = sections.First(x => x.sectname == "__mod_init_func");
-                var addrs = ReadClassArray<ulong>(__mod_init_func.offset, (long)__mod_init_func.size / 8);
+                var addrs = ReadClassArray<ulong>(__mod_init_func.offset, __mod_init_func.size / 8);
                 foreach (var i in addrs)
                 {
                     if (i > 0)
@@ -228,8 +228,8 @@ namespace Il2CppDumper
             }
             if (codeRegistration != 0 && metadataRegistration != 0)
             {
-	            reportProgressAction($"CodeRegistration : {codeRegistration:x}");
-	            reportProgressAction($"MetadataRegistration : {metadataRegistration:x}");
+                Console.WriteLine("CodeRegistration : {0:x}", codeRegistration);
+                Console.WriteLine("MetadataRegistration : {0:x}", metadataRegistration);
                 Init(codeRegistration, metadataRegistration);
                 return true;
             }
@@ -238,16 +238,9 @@ namespace Il2CppDumper
 
         public override bool PlusSearch(int methodCount, int typeDefinitionsCount, int imageCount)
         {
-            var data = sections.Where(x => x.sectname == "__const" || x.sectname == "__cstring" || x.sectname == "__data").ToArray();
-            var code = sections.Where(x => x.flags == 0x80000400).ToArray();
-            var bss = sections.Where(x => x.flags == 1u).ToArray();
-
-            var plusSearch = new PlusSearch(this, methodCount, typeDefinitionsCount, maxMetadataUsages, imageCount);
-            plusSearch.SetSection(SearchSectionType.Exec, code);
-            plusSearch.SetSection(SearchSectionType.Data, data);
-            plusSearch.SetSection(SearchSectionType.Bss, bss);
-            var codeRegistration = plusSearch.FindCodeRegistration();
-            var metadataRegistration = plusSearch.FindMetadataRegistration();
+            var sectionHelper = GetSectionHelper(methodCount, typeDefinitionsCount, imageCount);
+            var codeRegistration = sectionHelper.FindCodeRegistration();
+            var metadataRegistration = sectionHelper.FindMetadataRegistration();
             return AutoPlusInit(codeRegistration, metadataRegistration);
         }
 
@@ -259,6 +252,37 @@ namespace Il2CppDumper
         public override ulong GetRVA(ulong pointer)
         {
             return pointer - vmaddr;
+        }
+
+        public override SectionHelper GetSectionHelper(int methodCount, int typeDefinitionsCount, int imageCount)
+        {
+            var data = sections.Where(x => x.sectname == "__const" || x.sectname == "__cstring" || x.sectname == "__data").ToArray();
+            var code = sections.Where(x => x.flags == 0x80000400).ToArray();
+            var bss = sections.Where(x => x.flags == 1u).ToArray();
+            var sectionHelper = new SectionHelper(this, methodCount, typeDefinitionsCount, metadataUsagesCount, imageCount);
+            sectionHelper.SetSection(SearchSectionType.Exec, code);
+            sectionHelper.SetSection(SearchSectionType.Data, data);
+            sectionHelper.SetSection(SearchSectionType.Bss, bss);
+            return sectionHelper;
+        }
+
+        public override bool CheckDump() => false;
+
+        public override ulong ReadUIntPtr()
+        {
+            var pointer = ReadUInt64();
+            if (pointer > vmaddr + 0xFFFFFFFF)
+            {
+                var addr = Position;
+                var section = sections.First(x => addr >= x.offset && addr <= x.offset + x.size);
+                if (section.sectname == "__const" || section.sectname == "__data")
+                {
+                    var rva = pointer - vmaddr;
+                    rva &= 0xFFFFFFFF;
+                    pointer = rva + vmaddr;
+                }
+            }
+            return pointer;
         }
     }
 }

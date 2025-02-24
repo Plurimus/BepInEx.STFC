@@ -5,14 +5,10 @@ namespace Il2CppDumper
 {
     public sealed class WebAssembly : BinaryStream
     {
-        private DataSection[] dataSections;
+        private readonly DataSection[] dataSections;
 
-        private Action<string> reportProgressAction;
-
-        public WebAssembly(Stream stream, Action<string> reportProgressAction) : base(stream)
+        public WebAssembly(Stream stream) : base(stream)
         {
-	        this.reportProgressAction = reportProgressAction;
-
             Is32Bit = true;
             var magic = ReadUInt32();
             var version = ReadInt32();
@@ -50,14 +46,15 @@ namespace Il2CppDumper
 
         public WebAssemblyMemory CreateMemory()
         {
-            var last = dataSections[dataSections.Length - 1];
-            var stream = new MemoryStream((int)last.Offset + last.Data.Length);
+            var last = dataSections[^1];
+            var bssStart = last.Offset + (uint)last.Data.Length;
+            var stream = new MemoryStream(new byte[Length]);
             foreach (var dataSection in dataSections)
             {
                 stream.Position = dataSection.Offset;
                 stream.Write(dataSection.Data, 0, dataSection.Data.Length);
             }
-            return new WebAssemblyMemory(stream, Is32Bit, reportProgressAction);
+            return new WebAssemblyMemory(stream, bssStart);
         }
     }
 }

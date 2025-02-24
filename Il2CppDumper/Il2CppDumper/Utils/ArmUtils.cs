@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Il2CppDumper
 {
@@ -14,7 +14,7 @@ namespace Il2CppDumper
         public static ulong DecodeAdr(ulong pc, byte[] inst)
         {
             var bin = inst.HexToBin();
-            var uint64 = bin.Substring(8, 19) + bin.Substring(1, 2);
+            var uint64 = string.Concat(bin.AsSpan(8, 19).ToString(), bin.AsSpan(1, 2).ToString());
             uint64 = uint64.PadLeft(64, uint64[0]);
             return pc + Convert.ToUInt64(uint64, 2);
         }
@@ -23,7 +23,7 @@ namespace Il2CppDumper
         {
             pc &= 0xFFFFFFFFFFFFF000;
             var bin = inst.HexToBin();
-            var uint64 = bin.Substring(8, 19) + bin.Substring(1, 2) + new string('0', 12);
+            var uint64 = string.Concat(bin.AsSpan(8, 19).ToString(), bin.AsSpan(1, 2).ToString(), new string('0', 12));
             uint64 = uint64.PadLeft(64, uint64[0]);
             return pc + Convert.ToUInt64(uint64, 2);
         }
