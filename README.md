@@ -21,7 +21,7 @@ BepInEx is a plugin / modding framework for Unity Mono, IL2CPP and .NET framewor
 |--------------|---------|------|-------|-----|
 | Unity IL2CPP | ✔️       | ❌    | ❌ (Wine only)  | ❌   |
 
-This is a fork of [BepInEx 6.0.0-pre.1](https://github.com/BepInEx/BepInEx/releases/tag/v6.0.0-pre.1) release to work with StarTrek Fleet Command (STFC) client.
+This is a fork of [BepInEx 6.0.0-pre.1](https://github.com/BepInEx/BepInEx/releases/tag/v6.0.0-pre.1) release to work with Star Trek Fleet Command™ (STFC) client.
 
 The latest version of BepInEx (builds after 6.0.0-be.647) using Il2CppInterop library has some issues with Access Violation causing silent crashes. These errors occur when adding plugins or when multiple methods injections are used in one plugin.
 BepInEx 6.0.0-pre.1 worked fine but due to game engine update to Unity 2021.3.41f it can't parse global-metadata file of version 31. So, it was an update integration of newer Il2CppDumper to work with metadata v31.
