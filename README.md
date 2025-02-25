@@ -40,4 +40,7 @@ use [Legacy](https://github.com/Plurimus/BepInEx.Legacy/tree/Legacy) branch
 - [Perfare/Il2CppDumper](https://github.com/Perfare/Il2CppDumper/releases/tag/v6.7.46) - v6.7.46
   fork ([8a521b9](https://github.com/Perfare/Il2CppDumper/commit/8a521b9c180cf13499253f0818cbc729dca767cb))
 
-
+## Plugins/Mods examples
+- [ConfigManager](https://github.com/Plurimus/Optimus.STFC.ConfigManager) - ingame settings configurator for [STFC Community Patch Mod](https://github.com/netniV/bob)
+- [UniversalTranslator](https://github.com/Plurimus/Optimus.STFC.UniversalTranslator) - alliance/galaxy chat translator
+- [Transformers](https://github.com/Plurimus/Optimus.STFC.Transformers) - some client GUI tweaks
