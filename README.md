@@ -23,7 +23,7 @@ BepInEx is a plugin / modding framework for Unity Mono, IL2CPP and .NET framewor
 
 This is a fork of [BepInEx 6.0.0-pre.1](https://github.com/BepInEx/BepInEx/releases/tag/v6.0.0-pre.1) release to work with Star Trek Fleet Command™ (STFC) client.
 
-The latest version of BepInEx (builds after 6.0.0-be.647) using Il2CppInterop library has some issues with Access Violation causing silent crashes. These errors occur when adding plugins or when multiple methods injections are used in one plugin.
+The latest version of BepInEx (builds after 6.0.0-be.647) using Il2CppInterop library has some [issues](https://github.com/BepInEx/Il2CppInterop/issues/106) with Access Violation causing silent crashes. These errors occur when adding plugins or when multiple methods injections are used in one plugin.
 BepInEx 6.0.0-pre.1 worked fine but due to game engine update to Unity 2021.3.41f it can't parse global-metadata file of version 31. So, it was an update integration of newer Il2CppDumper to work with metadata v31.
 
 Tested only with STFC client - Unity v2021.3.41f Il2Cpp
@@ -40,7 +40,7 @@ use [Legacy](https://github.com/Plurimus/BepInEx.Legacy/tree/Legacy) branch
 - [Perfare/Il2CppDumper](https://github.com/Perfare/Il2CppDumper/releases/tag/v6.7.46) - v6.7.46
   fork ([8a521b9](https://github.com/Perfare/Il2CppDumper/commit/8a521b9c180cf13499253f0818cbc729dca767cb))
 
-## Plugins/Mods examples
+## STFC Plugins/Mods examples
 - [ConfigManager](https://github.com/Plurimus/Optimus.STFC.ConfigManager) - ingame settings configurator for [STFC Community Patch Mod](https://github.com/netniV/bob)
 - [UniversalTranslator](https://github.com/Plurimus/Optimus.STFC.UniversalTranslator) - alliance/galaxy chat translator
 - [Transformers](https://github.com/Plurimus/Optimus.STFC.Transformers) - some client GUI tweaks
