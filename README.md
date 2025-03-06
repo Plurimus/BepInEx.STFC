@@ -44,3 +44,6 @@ use [Legacy](https://github.com/Plurimus/BepInEx.Legacy/tree/Legacy) branch
 - [ConfigManager](https://github.com/Plurimus/Optimus.STFC.ConfigManager) - ingame settings configurator for [STFC Community Patch Mod](https://github.com/netniV/bob)
 - [UniversalTranslator](https://github.com/Plurimus/Optimus.STFC.UniversalTranslator) - alliance/galaxy chat translator
 - [Transformers](https://github.com/Plurimus/Optimus.STFC.Transformers) - some client GUI tweaks
+
+## Support
+For STFC BepInEx items, please visit the [BORG Box](https://discord.gg/8MRcfserGH) discord server.
